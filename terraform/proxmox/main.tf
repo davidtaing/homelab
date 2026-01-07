@@ -47,7 +47,10 @@ module "workers" {
 resource "null_resource" "install_k3s_control_plane" {
   count = var.control_plane_count
 
-  depends_on = [module.control_plane]
+  depends_on = [
+    module.control_plane,
+    null_resource.stop_docker_hosts  # Wait for Docker VMs to be stopped
+  ]
 
   connection {
     type        = "ssh"
@@ -71,7 +74,8 @@ resource "null_resource" "install_k3s_workers" {
 
   depends_on = [
     module.workers,
-    null_resource.install_k3s_control_plane
+    null_resource.install_k3s_control_plane,
+    null_resource.stop_docker_hosts  # Wait for Docker VMs to be stopped
   ]
 
   connection {

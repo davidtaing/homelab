@@ -4,9 +4,16 @@ This Terraform project provisions Ubuntu VMs on Proxmox and sets up a K3s Kubern
 
 ## Architecture
 
-- **1 Control Plane Node**: Runs the K3s server
-- **5 Worker Nodes**: Run K3s agents
+### K3s Cluster
+- **1 Control Plane Node**: Runs the K3s server (VM ID 200)
+- **5 Worker Nodes**: Run K3s agents (VM IDs 210-214)
 - **Resources per VM**: 2 vCPU, 4GB RAM, 40GB disk
+
+### Docker VMs (Optional - Enabled by Default)
+- **2 Docker-only VMs**: One per Proxmox node (VM IDs 220-221)
+- **Resources per VM**: 2 vCPU, 4GB RAM, 30GB disk
+- **Auto-start**: No (VMs remain stopped to save resources)
+- **IPs**: 192.168.0.150, 192.168.0.151
 
 ## Prerequisites
 
@@ -88,6 +95,64 @@ To destroy all resources:
 terraform destroy
 ```
 
+## Docker VMs
+
+This project includes optional Docker-only VMs that are created but remain stopped to save resources.
+
+### What Gets Created
+
+- 2 Docker VMs (one on each Proxmox node)
+- Docker pre-installed and configured
+- VMs automatically stopped after creation
+- IP addresses: 192.168.0.150, 192.168.0.151
+
+### Starting Docker VMs
+
+```bash
+# Start one or both Docker VMs
+ssh root@192.168.0.10
+qm start 220  # docker-host-1
+qm start 221  # docker-host-2
+
+# Or use the command from terraform output
+terraform output start_docker_command
+```
+
+### Using Docker VMs
+
+```bash
+# SSH into Docker VM (after starting it)
+ssh ubuntu@192.168.0.150
+
+# Use Docker
+docker ps
+docker run -d -p 80:80 nginx
+docker-compose up -d
+```
+
+### Stopping Docker VMs
+
+```bash
+ssh root@192.168.0.10
+qm stop 220
+qm stop 221
+```
+
+### Disabling Docker VMs
+
+If you don't want Docker VMs:
+
+1. Delete or rename `docker-nodes.tf`
+2. Run `terraform apply` to remove them
+
+Or set the count to 0 in `docker-nodes.tf`:
+```hcl
+count = 0  # Disables Docker VM creation
+```
+
 ## Next Steps
 
-After the K3s cluster is running, you can create a separate Terraform project for Kubernetes resources using the Kubernetes/Helm provider.
+After the K3s cluster is running, you can:
+- Deploy applications via kubectl or ArgoCD
+- Use the Docker VMs for legacy workloads or testing
+- Create a separate Terraform project for Kubernetes resources using the Kubernetes/Helm provider
