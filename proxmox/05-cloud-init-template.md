@@ -188,9 +188,15 @@ qm set 9000 --ciuser ubuntu
 # Note: SSH keys and IPs will be set per VM by Terraform
 ```
 
-## Step 8: Repeat on Second Server (If Not Clustered)
+## Step 8: Verify Template in Cluster
 
-If you created a Proxmox cluster, the template is shared automatically. If not, repeat on the second server:
+Since you created a Proxmox cluster, the template **configuration is automatically shared** across both nodes. However, each node needs its own copy of the template disk for local VM creation.
+
+### Option A: Let Terraform Handle It (Recommended)
+Terraform will automatically use the template from the node where you created it. VMs created on pve2 will clone from pve1 over the network.
+
+### Option B: Create Template on Both Nodes (Better Performance)
+For faster VM creation, optionally create the template on the second node:
 
 ```bash
 # SSH into second server
@@ -209,6 +215,8 @@ qm set 9000 --boot c --bootdisk scsi0
 qm set 9000 --serial0 socket --vga serial0
 qm template 9000
 ```
+
+**Note**: This step is optional. Terraform will work either way.
 
 ## Understanding the Template Configuration
 
@@ -333,9 +341,9 @@ Before proceeding to Terraform:
 - [ ] Disk imported and attached
 - [ ] Cloud-init drive configured
 - [ ] Template flag set (qm template)
-- [ ] Template visible in Proxmox UI
+- [ ] Template visible in Proxmox UI from either node
 - [ ] (Optional) Test clone successful
-- [ ] Template created on both servers (if not clustered)
+- [ ] (Optional) Template disk created on both nodes for better performance
 
 ## Next Steps
 

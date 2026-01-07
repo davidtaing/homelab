@@ -1,40 +1,26 @@
-# Proxmox Cluster Setup (Optional)
+# Proxmox Cluster Setup
 
 This guide covers creating a Proxmox cluster to connect your two servers together.
 
-## Do You Need Clustering?
+## Why Cluster Your Proxmox Servers?
 
 ### ✅ **Cluster Benefits:**
 - **Centralized Management**: Manage both servers from one web UI
 - **VM Migration**: Move running VMs between servers
-- **High Availability**: Automatic VM restart on node failure
+- **High Availability**: Automatic VM restart on node failure (with shared storage)
 - **Shared Configuration**: Users, storage, network configs sync automatically
 - **Load Distribution**: Terraform automatically spreads VMs across nodes
+- **Single Terraform Config**: One configuration manages both servers
+- **Easier Management**: Create templates once, available on both nodes
 
-### ❌ **Cluster Requirements:**
-- Both servers must be on same network
+### Requirements:
+- Both servers on same network
 - Reliable network connection between servers
-- Time synchronization (NTP)
-- Unique hostnames
-- (For HA) Shared storage (optional for basic clustering)
+- Time synchronization (NTP) - critical!
+- Unique hostnames (pve1, pve2)
+- Open firewall ports (if firewall enabled)
 
-### 🤔 **Do You Need It for k3s?**
-
-**Short answer: No, but it's convenient.**
-
-**Without Cluster:**
-- Terraform can still deploy to multiple Proxmox servers
-- You need separate `terraform.tfvars` configs for each server
-- Manage each server's web UI separately
-- VMs are distributed but not centrally managed
-
-**With Cluster:**
-- Single web UI for both servers
-- Single Terraform configuration
-- Easier VM management
-- Better for learning cluster concepts
-
-**Recommendation for your setup:** Create a cluster. It makes management easier and you'll learn valuable HA concepts.
+**For this homelab setup, clustering is required** as your Terraform configuration expects both nodes to be in a cluster for proper VM distribution.
 
 ## Prerequisites
 

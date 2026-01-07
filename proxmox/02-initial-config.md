@@ -216,47 +216,18 @@ echo "Test from Proxmox" | mail -s "Test Email" your-email@gmail.com
 
 **Skip this for now, configure later if needed.**
 
-## Step 8: Create Cluster (Optional - For HA)
+## Step 8: Cluster Setup
 
-If you want high availability, create a cluster between your two servers.
+**Important**: Clustering is covered in detail in the next guide.
 
-### On First Server (pve1):
-```bash
-# Create cluster
-pvecm create homelab-cluster
+The cluster setup is an essential step for this homelab as it enables:
+- Centralized management of both servers
+- Automatic VM distribution by Terraform
+- Shared configuration across nodes
 
-# Check status
-pvecm status
-```
+**Proceed to [03-clustering.md](03-clustering.md) for complete clustering instructions.**
 
-### On Second Server (pve2):
-```bash
-# Join cluster (from pve2)
-pvecm add 192.168.0.10
-
-# Enter root password for pve1 when prompted
-```
-
-### Verify Cluster:
-```bash
-# Check cluster status
-pvecm status
-
-# Should show both nodes
-pvecm nodes
-```
-
-**Benefits of clustering:**
-- Live migration of VMs between hosts
-- High availability
-- Shared configuration
-
-**Downsides:**
-- Requires shared storage for HA
-- More complex networking
-- Quorum requirements
-
-**Recommendation**: Start without clustering, add later if needed.
+You can optionally skip ahead and complete basic security steps below, but clustering must be done before running Terraform.
 
 ## Step 9: Basic Security
 

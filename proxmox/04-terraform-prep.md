@@ -183,10 +183,7 @@ ssh root@192.168.0.10
 # List cluster nodes
 pvecm nodes
 
-# Or if not clustered:
-hostname
-
-# Should show: pve1, pve2, or whatever you named them
+# Should show both nodes: pve1, pve2
 ```
 
 **Update terraform.tfvars later** with your actual node names:
@@ -274,20 +271,23 @@ systemctl restart pveproxy
 iptables -L -n | grep 8006
 ```
 
-## Repeat for Second Server (If Not Clustered)
+## Cluster Configuration Sync
 
-If you didn't create a Proxmox cluster, repeat Steps 1-3 on your second server:
+Since you created a Proxmox cluster, the Terraform user and API token are **automatically synced to both nodes**. You don't need to repeat the setup on the second server.
 
+**Verify sync:**
 ```bash
+# SSH into second server
 ssh root@192.168.0.11
 
-# Create user and token on second server
-pveum user add terraform@pve
-pveum aclmod / -user terraform@pve -role Administrator
-pveum user token add terraform@pve terraform-token --privsep=0
+# Check user exists
+pveum user list | grep terraform
+
+# Check token exists
+pveum user token list terraform@pve
 ```
 
-**Note**: If you created a cluster, the user/token is automatically synced to all nodes.
+Both should show the terraform user and token without any additional configuration.
 
 ## Security Best Practices
 
