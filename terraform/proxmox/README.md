@@ -6,7 +6,7 @@ This Terraform project provisions Ubuntu VMs on Proxmox and sets up a K3s Kubern
 
 - **1 Control Plane Node**: Runs the K3s server
 - **5 Worker Nodes**: Run K3s agents
-- **Resources per VM**: 2 vCPU, 4GB RAM, 32GB disk
+- **Resources per VM**: 2 vCPU, 4GB RAM, 40GB disk
 
 ## Prerequisites
 
