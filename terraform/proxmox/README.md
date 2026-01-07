@@ -12,26 +12,7 @@ This Terraform project provisions Ubuntu VMs on Proxmox and sets up a K3s Kubern
 
 ### 1. Install Terraform
 
-```bash
-# Download and install Terraform (Linux)
-wget https://releases.hashicorp.com/terraform/1.7.0/terraform_1.7.0_linux_amd64.zip
-unzip terraform_1.7.0_linux_amd64.zip
-sudo mv terraform /usr/local/bin/
-terraform version
-```
-
-Or use your package manager:
-```bash
-# Ubuntu/Debian
-sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
-wget -O- https://apt.releases.hashicorp.com/gpg | \
-    gpg --dearmor | \
-    sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
-    https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
-    sudo tee /etc/apt/sources.list.d/hashicorp.list
-sudo apt update && sudo apt install terraform
-```
+https://developer.hashicorp.com/terraform/install
 
 ### 2. Proxmox Setup
 
