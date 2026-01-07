@@ -1,0 +1,47 @@
+# Proxmox Configuration
+proxmox_api_url       = "https://192.168.1.10:8006/api2/json"  # Replace with your Proxmox host IP
+proxmox_token_id      = "terraform@pve!terraform-token"         # Replace with your token ID
+proxmox_token_secret  = "your-secret-token-here"                # Replace with your token secret
+proxmox_tls_insecure  = true                                    # Set to false if using valid SSL cert
+
+# SSH Configuration
+ssh_public_key        = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAB... your-email@example.com"  # Replace with your public key
+ssh_private_key_path  = "~/.ssh/id_rsa"                         # Path to your private key
+
+# Network Configuration
+ip_gateway            = "192.168.1.1"                           # Your network gateway
+ip_cidr               = "/24"                                   # Subnet mask in CIDR notation
+
+# Proxmox Nodes (two servers)
+proxmox_nodes = [
+  "pve1",  # First Proxmox server hostname
+  "pve2"   # Second Proxmox server hostname
+]
+
+# Control Plane IPs (1 node)
+control_plane_ips = [
+  "192.168.1.100"
+]
+
+# Worker IPs (5 nodes)
+worker_ips = [
+  "192.168.1.101",
+  "192.168.1.102",
+  "192.168.1.103",
+  "192.168.1.104",
+  "192.168.1.105"
+]
+
+# Cluster Configuration
+cluster_name          = "homelab-k3s"
+vm_template_name      = "ubuntu-cloud"  # Name of your Ubuntu cloud-init template
+k3s_version           = "v1.28.5+k3s1"  # K3s version to install
+
+# VM Resources (per VM: 2 vCPU, 4GB RAM, 40GB disk)
+vm_cpu_cores          = 2
+vm_memory             = 4096
+vm_disk_size          = "40G"
+network_bridge        = "vmbr0"
+
+# Optional: Set a custom K3s token (leave empty to auto-generate)
+# k3s_token           = "your-custom-token-here"
