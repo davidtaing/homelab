@@ -12,6 +12,38 @@ This guide walks through creating an Ubuntu cloud-init template that Terraform w
 
 Your Terraform configuration uses cloud-init to automatically configure each VM.
 
+## Quick Start: Automated Script (Recommended)
+
+We've provided a script that automates the entire template creation process:
+
+```bash
+# Copy script to Proxmox
+scp ~/homelab/proxmox/scripts/create-ubuntu-template.sh root@192.168.0.10:/root/
+
+# SSH into Proxmox
+ssh root@192.168.0.10
+
+# Run the script
+chmod +x create-ubuntu-template.sh
+./create-ubuntu-template.sh
+```
+
+The script will:
+- Download Ubuntu 22.04 cloud image
+- Create template with VM ID 9000
+- Configure cloud-init settings
+- Optionally clean up downloaded image
+
+**Then repeat on the second node for optimal performance.**
+
+See [scripts/README.md](scripts/README.md) for details.
+
+---
+
+## Manual Steps (Alternative)
+
+If you prefer to understand each step or customize the process, follow the manual instructions below.
+
 ## Step 1: Download Ubuntu Cloud Image
 
 Cloud images are pre-built, minimal Ubuntu images designed for cloud/virtualization.
