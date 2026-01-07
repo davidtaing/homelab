@@ -8,8 +8,9 @@ Follow these guides in sequence:
 
 1. [01-installation.md](01-installation.md) - Install Proxmox VE on both servers
 2. [02-initial-config.md](02-initial-config.md) - Initial configuration and networking
-3. [03-terraform-prep.md](03-terraform-prep.md) - Prepare for Terraform automation
-4. [04-cloud-init-template.md](04-cloud-init-template.md) - Create Ubuntu cloud-init template
+3. [03-clustering.md](03-clustering.md) - **OPTIONAL**: Connect both nodes into a cluster
+4. [04-terraform-prep.md](04-terraform-prep.md) - Prepare for Terraform automation
+5. [05-cloud-init-template.md](05-cloud-init-template.md) - Create Ubuntu cloud-init template
 
 ## What Gets Automated vs Manual
 
