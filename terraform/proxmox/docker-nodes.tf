@@ -8,7 +8,7 @@ module "docker_host" {
   count    = length(var.proxmox_nodes)  # One per Proxmox node
 
   vm_name        = "docker-host-${count.index + 1}"
-  vm_id          = 220 + count.index  # VM IDs: 220, 221
+  vm_id          = 300 + count.index  # VM IDs: 300, 301
   target_node    = var.proxmox_nodes[count.index]
   template_name  = var.vm_template_name
   cpu_cores      = 2

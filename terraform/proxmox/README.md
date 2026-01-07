@@ -10,7 +10,7 @@ This Terraform project provisions Ubuntu VMs on Proxmox and sets up a K3s Kubern
 - **Resources per VM**: 2 vCPU, 4GB RAM, 40GB disk
 
 ### Docker VMs (Optional - Enabled by Default)
-- **2 Docker-only VMs**: One per Proxmox node (VM IDs 220-221)
+- **2 Docker-only VMs**: One per Proxmox node (VM IDs 300-301)
 - **Resources per VM**: 2 vCPU, 4GB RAM, 30GB disk
 - **Auto-start**: No (VMs remain stopped to save resources)
 - **IPs**: 192.168.0.150, 192.168.0.151
@@ -111,8 +111,8 @@ This project includes optional Docker-only VMs that are created but remain stopp
 ```bash
 # Start one or both Docker VMs
 ssh root@192.168.0.10
-qm start 220  # docker-host-1
-qm start 221  # docker-host-2
+qm start 300  # docker-host-1
+qm start 301  # docker-host-2
 
 # Or use the command from terraform output
 terraform output start_docker_command
@@ -134,8 +134,8 @@ docker-compose up -d
 
 ```bash
 ssh root@192.168.0.10
-qm stop 220
-qm stop 221
+qm stop 300
+qm stop 301
 ```
 
 ### Disabling Docker VMs
