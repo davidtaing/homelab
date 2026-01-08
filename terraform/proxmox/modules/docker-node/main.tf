@@ -11,9 +11,6 @@ resource "proxmox_vm_qemu" "docker_node" {
   scsihw   = "virtio-scsi-pci"
   bootdisk = "scsi0"
 
-  # Don't start on Proxmox host boot
-  onboot = false
-
   cpu {
     cores   = var.cpu_cores
     sockets = 1
