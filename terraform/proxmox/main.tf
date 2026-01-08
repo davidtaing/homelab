@@ -12,7 +12,7 @@ module "control_plane" {
   source   = "./modules/k3s-node"
   count    = var.control_plane_count
 
-  vm_name        = "${var.cluster_name}-control-${count.index + 1}"
+  vm_name        = "k3s-control-${count.index + 1}"
   vm_id          = 200 + count.index
   target_node    = var.proxmox_nodes[count.index % length(var.proxmox_nodes)]
   template_name  = var.vm_template_name
@@ -30,9 +30,9 @@ module "workers" {
   source   = "./modules/k3s-node"
   count    = var.worker_count
 
-  vm_name        = "${var.cluster_name}-worker-${count.index + 1}"
+  vm_name        = "k3s-worker-${count.index + 1}"
   vm_id          = 210 + count.index
-  target_node    = var.proxmox_nodes[count.index % length(var.proxmox_nodes)]
+  target_node    = var.proxmox_nodes[(count.index + 1) % length(var.proxmox_nodes)]
   template_name  = var.vm_template_name
   cpu_cores      = var.vm_cpu_cores
   memory         = var.vm_memory

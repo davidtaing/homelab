@@ -44,6 +44,30 @@ MEMORY=2048                # RAM in MB
 BRIDGE="vmbr0"             # Network bridge
 ```
 
+**Important for multi-node clusters with local storage:**
+
+When using local storage (local-lvm), each node needs a template with a **different VM ID**:
+- Node 1 (pve): Use ID 9000
+- Node 2 (pve2): Use ID 9001
+
+Edit the script before running on the second node:
+
+```bash
+# On pve2, edit the script first
+ssh root@192.168.0.21
+nano create-ubuntu-template.sh
+
+# Change line 8 from:
+TEMPLATE_ID=9000
+# To:
+TEMPLATE_ID=9001
+
+# Then run the script
+./create-ubuntu-template.sh
+```
+
+**Keep the template name the same** ("ubuntu-cloud") on both nodes.
+
 ### One-Liner Install
 
 Run directly on Proxmox without downloading:
@@ -100,13 +124,19 @@ qm config 9000
 Run this script on **both nodes** for optimal performance:
 
 ```bash
-# On pve1
-ssh root@192.168.0.10
+# On pve (node 1) - use default ID 9000
+ssh root@192.168.0.20
 ./create-ubuntu-template.sh
 
-# On pve2
-ssh root@192.168.0.11
+# On pve2 (node 2) - edit script to use ID 9001
+ssh root@192.168.0.21
+# Edit the script first (change TEMPLATE_ID to 9001)
+nano create-ubuntu-template.sh
 ./create-ubuntu-template.sh
 ```
 
-Both use the same template ID (9000) - this is correct in a cluster!
+**Important:** With local storage, each node needs a different template ID but the same name.
+- pve: ID 9000, name "ubuntu-cloud"
+- pve2: ID 9001, name "ubuntu-cloud"
+
+This allows Terraform to find the local template on each node by name.
