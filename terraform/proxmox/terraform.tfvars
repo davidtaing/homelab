@@ -1,5 +1,5 @@
 # Proxmox Configuration
-proxmox_api_url       = "https://192.168.0.10:8006/api2/json"
+proxmox_api_url       = "https://192.168.0.20:8006/api2/json"
 # proxmox_token_id and proxmox_token_secret are read from environment variables:
 # TF_VAR_proxmox_token_id and TF_VAR_proxmox_token_secret
 proxmox_tls_insecure  = true
