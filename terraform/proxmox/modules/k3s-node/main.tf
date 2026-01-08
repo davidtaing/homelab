@@ -7,21 +7,28 @@ resource "proxmox_vm_qemu" "k3s_node" {
 
   agent    = 1
   os_type  = "cloud-init"
-  cores    = var.cpu_cores
-  sockets  = 1
-  cpu      = "host"
   memory   = var.memory
   scsihw   = "virtio-scsi-pci"
   bootdisk = "scsi0"
 
-  disk {
-    type    = "scsi"
-    storage = "local-lvm"
-    size    = var.disk_size
-    slot    = 0
+  cpu {
+    cores   = var.cpu_cores
+    sockets = 1
+  }
+
+  disks {
+    scsi {
+      scsi0 {
+        disk {
+          storage = "local-lvm"
+          size    = var.disk_size
+        }
+      }
+    }
   }
 
   network {
+    id     = 0
     model  = "virtio"
     bridge = var.network_bridge
   }
