@@ -1,0 +1,6 @@
+# Proxmox API Token Credentials
+# Copy this file to .env and fill in your actual values
+# Then run: source .env
+
+export TF_VAR_proxmox_token_id="terraform@pve!terraform-token"
+export TF_VAR_proxmox_token_secret="your-token-secret-here"

@@ -4,14 +4,16 @@ variable "proxmox_api_url" {
 }
 
 variable "proxmox_token_id" {
-  description = "Proxmox API token ID (e.g., terraform@pve!terraform-token)"
+  description = "Proxmox API token ID (e.g., terraform@pve!terraform-token). Can be set via TF_VAR_proxmox_token_id env var."
   type        = string
+  default     = null
 }
 
 variable "proxmox_token_secret" {
-  description = "Proxmox API token secret"
+  description = "Proxmox API token secret. Can be set via TF_VAR_proxmox_token_secret env var."
   type        = string
   sensitive   = true
+  default     = null
 }
 
 variable "proxmox_tls_insecure" {
