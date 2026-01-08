@@ -2,6 +2,9 @@
 # Script to create Ubuntu cloud-init template on Proxmox
 # Run this script on each Proxmox node
 
+# Trap errors and show useful message
+trap 'echo -e "\n${RED}Error: Script failed at line $LINENO${NC}"; exit 1' ERR
+
 set -e  # Exit on any error
 
 # Configuration
@@ -52,10 +55,17 @@ if [ -f "$IMAGE_FILE" ]; then
     echo -e "${YELLOW}Image file already exists. Skipping download.${NC}"
 else
     echo "Downloading Ubuntu $UBUNTU_VERSION cloud image..."
-    wget -q --show-progress "$DOWNLOAD_URL"
+    echo "URL: $DOWNLOAD_URL"
 
-    if [ $? -ne 0 ]; then
+    if ! wget -q --show-progress "$DOWNLOAD_URL" 2>&1; then
         echo -e "${RED}Error: Failed to download cloud image${NC}"
+        echo -e "${RED}This is usually caused by DNS or network issues.${NC}"
+        echo ""
+        echo "Troubleshooting steps:"
+        echo "1. Check DNS: cat /etc/resolv.conf"
+        echo "2. Test DNS: ping -c 3 8.8.8.8"
+        echo "3. Test name resolution: ping -c 3 cloud-images.ubuntu.com"
+        echo "4. Fix DNS temporarily: echo 'nameserver 8.8.8.8' > /etc/resolv.conf"
         exit 1
     fi
 fi
