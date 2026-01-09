@@ -36,42 +36,41 @@ resource "null_resource" "install_docker" {
 
   provisioner "remote-exec" {
     inline = [
-      "cloud-init status --wait",
+      "echo 'Waiting for cloud-init...'",
+      "cloud-init status --wait || true",  # Don't fail if cloud-init already finished
+      "echo 'Downloading Docker installation script...'",
       "curl -fsSL https://get.docker.com -o get-docker.sh",
+      "echo 'Installing Docker...'",
       "sudo sh get-docker.sh",
+      "echo 'Configuring Docker user permissions...'",
       "sudo usermod -aG docker ubuntu",
+      "echo 'Enabling Docker service...'",
       "sudo systemctl enable docker",
+      "echo 'Starting Docker service...'",
       "sudo systemctl start docker",
-      "rm get-docker.sh"
+      "echo 'Waiting for Docker to be ready...'",
+      "timeout 30 bash -c 'until sudo docker info >/dev/null 2>&1; do sleep 1; done' || true",
+      "echo 'Cleaning up installation script...'",
+      "rm get-docker.sh",
+      "echo 'Docker installation complete!'"
     ]
   }
-}
 
-# Stop Docker VMs after creation and setup
-resource "null_resource" "stop_docker_hosts" {
-  count = length(var.proxmox_nodes)  # Match the docker_host count
-
-  depends_on = [null_resource.install_docker]
-
-  provisioner "local-exec" {
-    command = <<-EOT
-      ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@${element(split("://", var.proxmox_api_url), 1) != "" ? element(split(":", element(split("://", var.proxmox_api_url), 1)), 0) : "192.168.0.10"} 'qm stop ${module.docker_host[count.index].vm_id}'
-    EOT
+  # Add a trigger to detect when the VM changes and needs reprovisioning
+  triggers = {
+    vm_id = module.docker_host[count.index].vm_id
   }
 }
+
+# Docker VMs remain running after setup
 
 # Output Docker host information
 output "docker_hosts" {
-  description = "Docker host IP addresses (VMs are stopped, start manually)"
+  description = "Docker host IP addresses"
   value       = length(module.docker_host) > 0 ? [for host in module.docker_host : host.ip_address] : []
 }
 
 output "docker_host_vmids" {
-  description = "Docker host VM IDs for starting/stopping"
+  description = "Docker host VM IDs"
   value       = length(module.docker_host) > 0 ? [for host in module.docker_host : host.vm_id] : []
-}
-
-output "start_docker_command" {
-  description = "Command to start Docker VMs"
-  value       = length(module.docker_host) > 0 ? "qm start ${join(" && qm start ", [for host in module.docker_host : host.vm_id])}" : "No Docker VMs created"
 }

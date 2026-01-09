@@ -10,7 +10,6 @@ resource "proxmox_vm_qemu" "docker_node" {
   memory      = var.memory
   scsihw      = "virtio-scsi-pci"
   bootdisk    = "scsi0"
-  automatic_reboot = false
 
   cpu {
     cores   = var.cpu_cores
