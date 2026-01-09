@@ -42,13 +42,13 @@ variable "cluster_name" {
 variable "control_plane_count" {
   description = "Number of control plane nodes"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "worker_count" {
   description = "Number of worker nodes"
   type        = number
-  default     = 5
+  default     = 4
 }
 
 variable "vm_template_name" {

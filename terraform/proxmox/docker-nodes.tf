@@ -31,6 +31,7 @@ resource "null_resource" "install_docker" {
     user        = "ubuntu"
     private_key = file(var.ssh_private_key_path)
     host        = module.docker_host[count.index].ip_address
+    timeout     = "5m"
   }
 
   provisioner "remote-exec" {

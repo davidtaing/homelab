@@ -5,11 +5,12 @@ resource "proxmox_vm_qemu" "docker_node" {
 
   clone = var.template_name
 
-  agent    = 1
-  os_type  = "cloud-init"
-  memory   = var.memory
-  scsihw   = "virtio-scsi-pci"
-  bootdisk = "scsi0"
+  agent       = 1
+  os_type     = "cloud-init"
+  memory      = var.memory
+  scsihw      = "virtio-scsi-pci"
+  bootdisk    = "scsi0"
+  automatic_reboot = false
 
   cpu {
     cores   = var.cpu_cores
@@ -22,6 +23,13 @@ resource "proxmox_vm_qemu" "docker_node" {
         disk {
           storage = "local-lvm"
           size    = var.disk_size
+        }
+      }
+    }
+    ide {
+      ide2 {
+        cloudinit {
+          storage = "local-lvm"
         }
       }
     }

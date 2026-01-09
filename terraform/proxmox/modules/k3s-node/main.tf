@@ -25,6 +25,13 @@ resource "proxmox_vm_qemu" "k3s_node" {
         }
       }
     }
+    ide {
+      ide2 {
+        cloudinit {
+          storage = "local-lvm"
+        }
+      }
+    }
   }
 
   network {

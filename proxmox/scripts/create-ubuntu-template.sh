@@ -100,7 +100,7 @@ qm set $TEMPLATE_ID --ide2 ${STORAGE}:cloudinit
 qm set $TEMPLATE_ID --boot c
 qm set $TEMPLATE_ID --bootdisk scsi0
 qm set $TEMPLATE_ID --serial0 socket
-qm set $TEMPLATE_ID --vga serial0
+qm set $TEMPLATE_ID --vga std  # Changed from serial0 to std for better console support
 
 # Set agent
 qm set $TEMPLATE_ID --agent enabled=1
@@ -108,6 +108,11 @@ qm set $TEMPLATE_ID --agent enabled=1
 # Set default cloud-init settings (can be overridden per VM)
 qm set $TEMPLATE_ID --nameserver "8.8.8.8 8.8.4.4"
 qm set $TEMPLATE_ID --ciuser ubuntu
+
+# IMPORTANT: Set ipconfig0 to enable cloud-init network configuration
+# Without this, VMs cloned from the template won't configure networking
+# Each VM clone will override this with its own specific IP settings
+qm set $TEMPLATE_ID --ipconfig0 ip=dhcp
 
 echo "Converting to template..."
 

@@ -18,18 +18,18 @@ proxmox_nodes = [
   "pve2"
 ]
 
-# Control Plane IPs (1 node)
+# Control Plane IPs (2 nodes - one per Proxmox host)
 control_plane_ips = [
-  "192.168.0.100"
+  "192.168.0.100",  # pve
+  "192.168.0.101"   # pve2
 ]
 
-# Worker IPs (5 nodes)
+# Worker IPs (4 nodes - two per Proxmox host)
 worker_ips = [
-  "192.168.0.101",
-  "192.168.0.102",
-  "192.168.0.103",
-  "192.168.0.104",
-  "192.168.0.105"
+  "192.168.0.102",  # pve
+  "192.168.0.103",  # pve2
+  "192.168.0.104",  # pve
+  "192.168.0.105"   # pve2
 ]
 
 # Cluster Configuration
