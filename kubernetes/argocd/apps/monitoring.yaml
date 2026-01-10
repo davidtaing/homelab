@@ -1,0 +1,95 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: 67.4.0
+    helm:
+      releaseName: kube-prometheus-stack
+      valuesObject:
+        # Grafana configuration
+        grafana:
+          enabled: true
+          admin:
+            existingSecret: "grafana-admin-credentials"
+            userKey: admin-user
+            passwordKey: admin-password
+          ingress:
+            enabled: false
+          persistence:
+            enabled: true
+            size: 5Gi
+
+        # Prometheus configuration
+        prometheus:
+          prometheusSpec:
+            retention: 7d
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  accessModes: ["ReadWriteOnce"]
+                  resources:
+                    requests:
+                      storage: 10Gi
+            # Service monitors for k3s components
+            serviceMonitorSelectorNilUsesHelmValues: false
+            podMonitorSelectorNilUsesHelmValues: false
+
+        # AlertManager configuration
+        alertmanager:
+          alertmanagerSpec:
+            storage:
+              volumeClaimTemplate:
+                spec:
+                  accessModes: ["ReadWriteOnce"]
+                  resources:
+                    requests:
+                      storage: 2Gi
+
+        # Enable default service monitors
+        defaultRules:
+          create: true
+
+        # K3s specific configurations
+        kubeControllerManager:
+          enabled: true
+          endpoints:
+            - 192.168.1.100  # Update with your k3s master node IP
+
+        kubeScheduler:
+          enabled: true
+          endpoints:
+            - 192.168.1.100  # Update with your k3s master node IP
+
+        kubeProxy:
+          enabled: true
+
+        kubeEtcd:
+          enabled: false  # k3s uses embedded etcd, adjust if needed
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

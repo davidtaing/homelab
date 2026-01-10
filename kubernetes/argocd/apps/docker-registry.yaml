@@ -1,0 +1,96 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: docker-registry
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://helm.twun.io
+    chart: docker-registry
+    targetRevision: 2.2.3
+    helm:
+      releaseName: docker-registry
+      valuesObject:
+        # Replica count
+        replicaCount: 1
+
+        # Storage configuration
+        persistence:
+          enabled: true
+          size: 20Gi
+          storageClass: ""
+          accessMode: ReadWriteOnce
+
+        # Service configuration
+        service:
+          name: docker-registry
+          type: NodePort
+          port: 5000
+          nodePort: 30500
+
+        # Resource limits
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+
+        # Security context
+        securityContext:
+          enabled: true
+          runAsUser: 1000
+          fsGroup: 1000
+
+        # Registry configuration
+        configData:
+          version: 0.1
+          log:
+            level: info
+            fields:
+              service: registry
+          storage:
+            cache:
+              blobdescriptor: inmemory
+            delete:
+              enabled: true  # Allow image deletion
+          http:
+            addr: :5000
+            headers:
+              X-Content-Type-Options: [nosniff]
+            debug:
+              addr: :5001
+              prometheus:
+                enabled: true
+                path: /metrics
+
+        # Basic authentication (configure secrets separately)
+        secrets:
+          htpasswd: ""  # Add htpasswd for basic auth
+
+        # Optional: TLS configuration
+        # tlsSecretName: registry-tls
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: docker-registry
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
