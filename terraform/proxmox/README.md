@@ -5,9 +5,10 @@ This Terraform project provisions Ubuntu VMs on Proxmox and sets up a K3s Kubern
 ## Architecture
 
 ### K3s Cluster
-- **1 Control Plane Node**: Runs the K3s server (VM ID 200)
-- **5 Worker Nodes**: Run K3s agents (VM IDs 210-214)
+- **2 Control Plane Nodes**: HA control plane (VM IDs 200-201)
+- **4 Worker Nodes**: Run K3s agents (VM IDs 210-213)
 - **Resources per VM**: 2 vCPU, 4GB RAM, 40GB disk
+- **Total**: 6 VMs with high availability
 
 ### Docker VMs (Optional - Enabled by Default)
 - **2 Docker-only VMs**: One per Proxmox node (VM IDs 300-301)
@@ -21,7 +22,30 @@ This Terraform project provisions Ubuntu VMs on Proxmox and sets up a K3s Kubern
 
 https://developer.hashicorp.com/terraform/install
 
-### 2. Proxmox Setup
+### 2. Install direnv (for managing environment variables)
+
+**Ubuntu/Debian:**
+```bash
+sudo apt update
+sudo apt install direnv
+
+# Add to your shell configuration
+echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**macOS:**
+```bash
+brew install direnv
+
+# Add to your shell configuration
+echo 'eval "$(direnv hook zsh)"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+**Other systems:** See https://direnv.net/docs/installation.html
+
+### 3. Proxmox Setup
 
 1. Create a Terraform user in Proxmox:
 ```bash
