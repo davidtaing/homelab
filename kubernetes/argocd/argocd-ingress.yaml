@@ -1,0 +1,24 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: argocd-server
+  namespace: argocd
+spec:
+  entryPoints:
+    - websecure                    # Use HTTPS (port 443)
+  routes:
+    - kind: Rule
+      match: Host(`argocd.local`)   # Route 1: Web UI traffic
+      priority: 10
+      services:
+        - name: argocd-server
+          port: 80
+    - kind: Rule
+      match: Host(`argocd.local`) && Header(`Content-Type`, `application/grpc`)  # Route 2: CLI traffic
+      priority: 11                  # Higher priority!
+      services:
+        - name: argocd-server
+          port: 80
+          scheme: h2c               # HTTP/2 Cleartext for gRPC
+  tls:
+    certResolver: default           # Your cert-manager or Traefik cert resolver
