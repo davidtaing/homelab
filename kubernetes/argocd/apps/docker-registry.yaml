@@ -9,7 +9,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://helm.twun.io
+    repoURL: https://twuni.github.io/docker-registry.helm
     chart: docker-registry
     targetRevision: 2.2.3
     helm:
