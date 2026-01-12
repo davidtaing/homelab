@@ -264,6 +264,42 @@ kubectl get pods -n monitoring
 
 ### Deploy Docker Registry
 
+**First, create authentication secret:**
+
+The Docker Registry requires basic authentication. Create the htpasswd secret from environment variables:
+
+```bash
+# Set credentials via environment variables
+export REGISTRY_USERNAME="admin"
+export REGISTRY_PASSWORD="your-secure-password"
+
+# Run the setup script
+chmod +x kubernetes/argocd/apps/create-registry-secret.sh
+./kubernetes/argocd/apps/create-registry-secret.sh
+```
+
+Or create manually:
+
+```bash
+# Install htpasswd if needed
+sudo apt install apache2-utils  # Ubuntu/Debian
+brew install httpd              # macOS
+
+# Create htpasswd file
+htpasswd -Bbn admin your-password > htpasswd
+
+# Create secret
+kubectl create namespace docker-registry
+kubectl create secret generic registry-htpasswd \
+  --from-file=htpasswd=htpasswd \
+  --namespace=docker-registry
+
+# Clean up
+rm htpasswd
+```
+
+**Then deploy the registry:**
+
 ```bash
 kubectl apply -f kubernetes/argocd/apps/docker-registry.yaml
 ```
@@ -295,8 +331,14 @@ NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="
 
 echo "Docker Registry: $NODE_IP:30500"
 
-# Test login
+# Login with credentials
 docker login $NODE_IP:30500
+# Username: admin (or your configured REGISTRY_USERNAME)
+# Password: (your configured REGISTRY_PASSWORD)
+
+# Test push/pull
+docker tag myimage:latest $NODE_IP:30500/myimage:latest
+docker push $NODE_IP:30500/myimage:latest
 ```
 
 ## Troubleshooting

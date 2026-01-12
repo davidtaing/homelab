@@ -69,9 +69,10 @@ spec:
                 enabled: true
                 path: /metrics
 
-        # Basic authentication (configure secrets separately)
+        # Basic authentication
         secrets:
-          htpasswd: ""  # Add htpasswd for basic auth
+          haSharedSecret: ""
+          htpasswd: "registry-htpasswd"  # Reference to htpasswd secret
 
         # Optional: TLS configuration
         # tlsSecretName: registry-tls
