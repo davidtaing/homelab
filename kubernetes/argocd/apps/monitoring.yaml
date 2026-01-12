@@ -45,14 +45,7 @@ spec:
 
         # AlertManager configuration
         alertmanager:
-          alertmanagerSpec:
-            storage:
-              volumeClaimTemplate:
-                spec:
-                  accessModes: ["ReadWriteOnce"]
-                  resources:
-                    requests:
-                      storage: 2Gi
+          enabled: false
 
         # Enable default service monitors
         defaultRules:
