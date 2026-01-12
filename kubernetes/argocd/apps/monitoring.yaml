@@ -23,7 +23,12 @@ spec:
             userKey: admin-user
             passwordKey: admin-password
           ingress:
-            enabled: false
+            enabled: true
+            ingressClassName: traefik
+            hosts:
+              - grafana.local
+            path: /
+            pathType: Prefix
           persistence:
             enabled: true
             size: 5Gi
