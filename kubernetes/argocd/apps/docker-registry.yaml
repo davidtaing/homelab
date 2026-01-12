@@ -28,9 +28,17 @@ spec:
         # Service configuration
         service:
           name: docker-registry
-          type: NodePort
+          type: ClusterIP
           port: 5000
-          nodePort: 30500
+
+        # Ingress configuration
+        ingress:
+          enabled: true
+          className: traefik
+          hosts:
+            - registry.local
+          annotations:
+            traefik.ingress.kubernetes.io/router.entrypoints: web
 
         # Resource limits
         resources:
