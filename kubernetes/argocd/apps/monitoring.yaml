@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kube-prometheus-stack
+  name: monitoring
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -13,7 +13,7 @@ spec:
     chart: kube-prometheus-stack
     targetRevision: 67.4.0
     helm:
-      releaseName: kube-prometheus-stack
+      releaseName: monitoring
       valuesObject:
         # Grafana configuration
         grafana:
